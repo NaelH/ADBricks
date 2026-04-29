@@ -66,6 +66,7 @@ h1 {
     color: #60a5fa;
 }
 
+/* Lists */
 ul {
     list-style: none;
     padding: 0;
@@ -78,8 +79,18 @@ li {
     border-radius: 6px;
 }
 
-/* Boutons */
-button {
+/* Page actions (barre au-dessus des cards) */
+.page-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* Boutons (fonctionne aussi pour <a>) */
+button,
+.btn {
+    display: inline-block;
     background: #2563eb;
     color: white;
     border: none;
@@ -88,13 +99,18 @@ button {
     cursor: pointer;
     font-weight: 500;
     transition: 0.2s;
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
 }
 
-button:hover {
+button:hover,
+.btn:hover {
     background: #1d4ed8;
 }
 
-button:active {
+button:active,
+.btn:active {
     transform: scale(0.97);
 }
 
@@ -115,6 +131,7 @@ button:active {
     background: #15803d;
 }
 
+/* Devices */
 .device {
     display: flex;
     justify-content: space-between;
@@ -125,6 +142,53 @@ button:active {
     margin-bottom: 10px;
 }
 
-.actions button {
-    margin-left: 10px;
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Forms */
+.form {
+    margin-top: 15px;
+}
+
+.form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #374151;
+    background: #1f2937;
+    color: white;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: #60a5fa;
+}
+
+/* Text helpers */
+.muted {
+    color: #94a3b8;
+}
+
+/* Code blocks */
+code,
+pre {
+    background: #1f2937;
+    color: #e5e7eb;
+    padding: 10px;
+    border-radius: 8px;
+    display: block;
+    overflow-x: auto;
 }

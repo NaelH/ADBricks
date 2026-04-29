@@ -12,7 +12,11 @@ def devicespage():
     devices = adb_client.get_devices()
     return render_template("devices.html", devices=devices)
 
-@app.route("/connect", methods=["POST"])
+@app.route("/tcpip")
+def tcpippage():
+    return render_template("tcpip.html")
+
+@app.route("/tcpip/connect", methods=["POST"])
 def connect():
     device = request.form.get("device")
     adb_client.connect_device(device)

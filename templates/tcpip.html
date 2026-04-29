@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Connexion TCP/IP</h1>
+
+<div class="card">
+    <h2>Connecter un appareil ADB en réseau</h2>
+    <p class="muted">
+        Entre l’adresse IP et le port du device. Exemple : <code>192.168.1.15:5555</code>
+    </p>
+
+    <form method="post" action="/tcpip/connect" class="form">
+        <label for="device">Adresse IP:PORT</label>
+
+        <div class="input-group">
+            <input
+                type="text"
+                id="device"
+                name="device"
+                placeholder="192.168.1.15:5555"
+                required
+            >
+
+            <button type="submit" class="btn-success">Connecter</button>
+        </div>
+    </form>
+</div>
+
+{% if result %}
+<div class="card">
+    <h2>Résultat</h2>
+    <pre>{{ result }}</pre>
+</div>
+{% endif %}
+
+<div class="card">
+    <h2>Aide</h2>
+    <p>Avant une connexion TCP/IP, le téléphone doit avoir ADB activé sur le port 5555.</p>
+
+    <pre>adb tcpip 5555
+adb connect 192.168.1.15:5555</pre>
+</div>
+{% endblock %}

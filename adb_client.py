@@ -1,6 +1,7 @@
 import subprocess
 
 default_device = "192.168.240.112:5555"
+default_device = "7.7.7.7:5555"
 
 def run_adb(args, device=None, timeout=15):
     """
@@ -83,5 +84,5 @@ def get_devices():
 def connect_device(device=default_device):
     run_adb(["connect", device])
 
-def connect_device(device=default_device):
+def disconnect_device(device=default_device):
     run_adb(["disconnect", device])
