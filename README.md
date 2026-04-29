@@ -1,3 +1,4 @@
+![ADBricks Cover](https://raw.githubusercontent.com/NaelH/ADBricks/refs/heads/readme/assets/cover.png)
 # 🧱 ADBricks
 
 ADBricks est une API Flask en Python permettant de piloter un appareil Android via ADB depuis une interface web. Le projet propose des fonctionnalités comme la gestion des applications, les captures d’écran et l’accès aux informations système, avec une architecture modulaire basée sur des plugins.
