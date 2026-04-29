@@ -18,7 +18,7 @@
 # variables
 current=$( pwd )
 packages="python3-pip python-is-python3 2to3"
-suminstallator="4301f287cd1c7299881853a2d39c055650dd6dc727500202d8fb843f65889078"
+suminstallator="7a66014db2eea98f968dc2c52984f668bc56d6a0dcefc0d6c93e68257bbe096a"
 sumthisone=$( sha256sum "$current"/install.sh | cut -d ' ' -f1 )
 
 # Fonctions
@@ -49,10 +49,8 @@ mise_a_jour(){
 [ "$1" == "-h" -o "$1" == "--help" -o "$1" == "help" ] && aide
 [ "$1" == "pull" ] && mise_a_jour
 [ $EUID -ne 0 ] && erreur "Ce script nécessite l'usage de droits administrateurs."
-[ "$suminstallator" != "$sumthisone" ] && erreur "Ce script d'installation est obselète. Veuillez retélécharger le projet ou le mettre à jour en utilisant le guide du programme."
 
 
-apt update
-apt install 
+apt update 
+apt install $packages 
 
-# Ce script a changé
