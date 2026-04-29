@@ -40,6 +40,7 @@ erreur(){
 mise_a_jour(){
     git pull
     echo -e "\nMise à jour terminé\n"
+    exit 0
 }
 
 # blindages
@@ -53,3 +54,5 @@ mise_a_jour(){
 
 apt update
 apt install 
+
+# Ce script a changé
