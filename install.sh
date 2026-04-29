@@ -10,6 +10,46 @@
 # Dépendance : 
 #   -   Internet
 #   -   sudo
+#   -   sha256sum
 #
 # Journal de bord :
 #  29th april 2026 : Beginning of the project 
+
+# variables
+current=$( pwd )
+packages="python3-pip python-is-python3 2to3"
+suminstallator="4301f287cd1c7299881853a2d39c055650dd6dc727500202d8fb843f65889078"
+sumthisone=$( sha256sum "$current"/install.sh | cut -d ' ' -f1 )
+
+# Fonctions
+
+aide(){
+    echo -e "\nUsage: sudo $0"
+    echo -e "       install     Permet l'installation de ADBricks"
+    echo -e "       iverb       Permet l'installation en mode textuel"
+    echo -e "       help        Obtenir de l'aide"
+    echo -e "       pull        Mise à jour de l'intégralité du projet\n"
+    exit 0
+}
+
+erreur(){
+    echo "Erreur : $1"
+    exit -1
+}
+
+mise_a_jour(){
+    git pull
+    echo -e "\nMise à jour terminé\n"
+}
+
+# blindages
+
+[ $# -ne 1 ] && erreur "Ce script prend en compte un argument."
+[ "$1" == "-h" -o "$1" == "--help" -o "$1" == "help" ] && aide
+[ "$1" == "pull" ] && mise_a_jour
+[ $EUID -ne 0 ] && erreur "Ce script nécessite l'usage de droits administrateurs."
+[ "$suminstallator" != "$sumthisone" ] && erreur "Ce script d'installation est obselète. Veuillez retélécharger le projet ou le mettre à jour en utilisant le guide du programme."
+
+
+apt update
+apt install 
