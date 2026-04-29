@@ -65,3 +65,23 @@ def get_android_version(device=default_device):
         ["shell", "getprop", "ro.build.version.release"],
         device=None
     )
+
+def get_devices():
+    result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
+    lines = result.stdout.strip().split("\n")[1:]
+
+    devices = []
+    for line in lines:
+        if line.strip():
+            parts = line.split()
+            devices.append({
+                "id": parts[0],
+                "status": parts[1]
+            })
+    return devices
+
+def connect_device(device=default_device):
+    run_adb(["connect", device])
+
+def connect_device(device=default_device):
+    run_adb(["disconnect", device])

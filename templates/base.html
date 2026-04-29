@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>ADBricks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">ADBricks</div>
+
+        <a href="/">Tableau de bord</a>
+        <a href="/devices">Appareils</a>
+        <a href="/files">Gestionnaire de fichier</a>
+        <a href="/apps">Applications</a>
+        <a href="/shell">Shell</a>
+        <a href="/logs">Logs</a>
+        <a href="/screen">Screen</a>
+        <a href="/network">Réseau</a>
+        <a href="/system">Système</a>
+    </div>
+
+    <div class="main">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

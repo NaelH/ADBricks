@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Appareils connectés</h2>
+
+    <form method="get" style="margin-bottom: 15px;">
+        <button type="submit">Rafraîchir</button>
+    </form>
+    <a href="/tcpip">
+        <button class="">Connexion TCP/IP</button>
+    </a>
+    <br>
+
+    {% if devices %}
+        {% for d in devices %}
+            <div class="device">
+                <span>{{ d.id }} - {{ d.status }}</span>
+
+                <div class="actions">
+                    <button class="btn-success">Connecter</button>
+                    <button class="btn-danger">Déconnecter</button>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Aucun appareil détecté</p>
+    {% endif %}
+</div>
+{% endblock %}
