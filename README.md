@@ -47,7 +47,7 @@ sudo apt install adb python3 python3-venv
 ### 2. Installation
 
 ```bash
-git clone https://github.com/tonpseudo/adbricks.git
+git clone https://github.com/NaelH/ADBricks.git
 cd adbricks
 
 python3 -m venv venv
