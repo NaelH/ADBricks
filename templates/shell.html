@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Shell ADB</h1>
+
+{% if not devices %}
+    <p>Aucun appareil connecté.</p>
+{% else %}
+
+<div class="card">
+    <form method="post">
+        <label>Cible :</label>
+
+        <select name="target">
+            <option value="one">Un appareil</option>
+            <option value="all">Tous les appareils</option>
+        </select>
+
+        <br><br>
+
+        <label>Appareil :</label>
+
+        <select name="device">
+            {% for d in devices %}
+                <option value="{{ d.id }}"
+                    {% if d.id == selected_device %}selected{% endif %}>
+                    {{ d.id }} - {{ d.state }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label>Commande :</label>
+        <input type="text" name="command" placeholder="ls /sdcard" style="width: 400px;">
+
+        <button type="submit">Exécuter</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Résultat</h2>
+
+    {% if command %}
+        <p><strong>Commande :</strong> {{ command }}</p>
+    {% endif %}
+
+    {% if results %}
+        {% for r in results %}
+            <h3>{{ r.device }} - {{ r.status }}</h3>
+            <pre>{{ r.output }}</pre>
+        {% endfor %}
+    {% elif output %}
+        <pre>{{ output }}</pre>
+    {% else %}
+        <p>Aucune commande exécutée.</p>
+    {% endif %}
+</div>
+
+{% endif %}
+{% endblock %}

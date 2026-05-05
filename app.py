@@ -89,6 +89,51 @@ def apps():
         apps=apps
     )
 
+@app.route("/shell", methods=["GET", "POST"])
+def shell():
+    devices = adb_client.list_devices()
+    selected_device = request.args.get("device") or request.form.get("device")
+
+    if not devices:
+        return render_template(
+            "shell.html",
+            devices=[],
+            selected_device=None,
+            command=None,
+            output=None,
+            results=[]
+        )
+
+    if not selected_device:
+        selected_device = devices[0]["id"]
+
+    output = None
+    results = []
+    command = None
+
+    if request.method == "POST":
+        command = request.form.get("command")
+        target = request.form.get("target")
+
+        if command:
+            if target == "all":
+                results = adb_client.run_shell_all(command)
+            else:
+                try:
+                    output = adb_client.run_shell(selected_device, command)
+                except Exception as e:
+                    output = f"Erreur : {str(e)}"
+
+    return render_template(
+        "shell.html",
+        devices=devices,
+        selected_device=selected_device,
+        command=command,
+        output=output,
+        results=results
+    )
+
+    
 @app.route("/api/devices")
 def api_devices():
     return "<p>API DEVICES</p>"

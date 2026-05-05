@@ -182,11 +182,38 @@ def list_packages(device):
     return packages
 
 def run_shell(device, command):
-    """
-    Executer une commande dans le shell spécifique à la page Shell
-    """
     return run_adb([
         "-s", device,
         "shell",
         command
     ])
+
+
+def run_shell_all(command):
+    devices = list_devices()
+    results = []
+
+    for device in devices:
+        device_id = device["id"]
+        status = device["status"]
+
+        if status != "device":
+            results.append({
+                "device": device_id,
+                "status": status,
+                "output": "Appareil non prêt"
+            })
+            continue
+
+        try:
+            output = run_shell(device_id, command)
+        except Exception as e:
+            output = f"Erreur : {str(e)}"
+
+        results.append({
+            "device": device_id,
+            "status": status,
+            "output": output
+        })
+
+    return results
