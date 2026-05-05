@@ -192,3 +192,7 @@ pre {
     display: block;
     overflow-x: auto;
 }
+
+tr td a {
+    color:#f3f3f3;
+}

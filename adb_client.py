@@ -49,6 +49,12 @@ def list_devices():
 
     return devices
 
+def list_files(devices, path):
+    """
+    Récupère les fichier à un emplacement précis sur un téléphone précis
+    """
+
+
 def get_device_model(device=default_device):
     """
     Récupère le modèle android
@@ -68,6 +74,9 @@ def get_android_version(device=default_device):
     )
 
 def get_devices():
+    """
+    Lister l'ensemble des appareils connecté
+    """
     result = subprocess.run(["adb", "devices"], capture_output=True, text=True)
     lines = result.stdout.strip().split("\n")[1:]
 
@@ -82,7 +91,102 @@ def get_devices():
     return devices
 
 def connect_device(device=default_device):
+    """
+    Connecter un android
+    """
     run_adb(["connect", device])
 
 def disconnect_device(device=default_device):
+    """
+    Déconnecter l'android
+    """
     run_adb(["disconnect", device])
+
+def parse_ls_output(output):
+    """
+    Parseur des sorties de la commande ls
+    """
+    files = []
+
+    for line in output.splitlines():
+        if not line.strip():
+            continue
+
+        if line.startswith("total"):
+            continue
+
+        parts = line.split(maxsplit=7)
+
+        if len(parts) < 8:
+            continue
+
+        permissions = parts[0]
+        size = parts[4]
+        date = parts[5]
+        time = parts[6]
+        name = parts[7]
+
+        if name in [".", ".."]:
+            continue
+
+        file_type = "file"
+
+        if permissions.startswith("d"):
+            file_type = "directory"
+        elif permissions.startswith("l"):
+            file_type = "link"
+
+        files.append({
+            "name": name,
+            "permissions": permissions,
+            "size": size,
+            "date": date,
+            "time": time,
+            "type": file_type
+        })
+
+    return files
+
+
+def list_files(device, path="/sdcard/"):
+    """
+    Lister les fichiers d'un device et à un emplacement défini
+    """
+    if not path.endswith("/"):
+        path += "/"
+
+    output = run_adb([
+        "-s", device,
+        "shell",
+        "ls", "-la", path
+    ])
+
+    return parse_ls_output(output)
+
+def list_packages(device):
+    """
+    Liste les applications présent sur le téléphone
+    """
+    output = run_adb([
+        "-s", device,
+        "shell",
+        "pm", "list", "packages"
+    ])
+
+    packages = []
+
+    for line in output.splitlines():
+        if line.startswith("package:"):
+            packages.append(line.replace("package:", "").strip())
+
+    return packages
+
+def run_shell(device, command):
+    """
+    Executer une commande dans le shell spécifique à la page Shell
+    """
+    return run_adb([
+        "-s", device,
+        "shell",
+        command
+    ])

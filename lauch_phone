@@ -1,0 +1,3 @@
+sudo systemctl restart waydroid-container
+waydroid session start 
+sudo waydroid shell

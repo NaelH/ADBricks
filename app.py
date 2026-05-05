@@ -22,6 +22,73 @@ def connect():
     adb_client.connect_device(device)
     return redirect("/devices")
 
+@app.route("/tcpip/disconnect", methods=["POST"])
+def disconnect():
+    device = request.form.get("device")
+    adb_client.disconnect_device(device)
+    return redirect("/devices")
+
+@app.route("/files")
+def files():
+    device = request.args.get("device")
+    path = request.args.get("path", "/sdcard/")
+
+    devices = adb_client.list_devices()
+
+    if not device:
+        if devices:
+            device = devices[0]["id"]
+        else:
+            return render_template(
+                "files.html",
+                device=None,
+                path=None,
+                files=[]
+            )
+
+    files = adb_client.list_files(device, path)
+
+    parent_path = None
+
+    if path != "/":
+        parent_path = "/".join(path.rstrip("/").split("/")[:-1])
+
+        if parent_path == "":
+            parent_path = "/"
+
+    return render_template(
+        "files.html",
+        device=device,
+        path=path,
+        parent_path=parent_path,
+        files=files
+    )
+
+@app.route("/apps")
+def apps():
+    selected_device = request.args.get("device")
+    devices = adb_client.list_devices()
+
+    if not devices:
+        return render_template(
+            "apps.html",
+            devices=[],
+            selected_device=None,
+            apps=[]
+        )
+
+    if not selected_device:
+        selected_device = devices[0]["id"]
+
+    apps = adb_client.list_packages(selected_device)
+
+    return render_template(
+        "apps.html",
+        devices=devices,
+        selected_device=selected_device,
+        apps=apps
+    )
+
 @app.route("/api/devices")
 def api_devices():
     return "<p>API DEVICES</p>"

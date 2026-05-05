@@ -20,7 +20,14 @@
                 <span>{{ d.id }} - {{ d.status }}</span>
 
                 <div class="actions">
-                    <button class="btn-danger">Disconnect</button>
+                    <form action="/tcpip/disconnect" method="post">
+                        <input type="text" name="device" value="{{ d.id }}" placeholder="192.168.240.112:5555" hidden>
+                        <button class="btn-danger" type="submit">Déconnecter</button>
+                    </form>
+                    <form action="/files" method="get">
+                        <input type="text" name="device" value="{{ d.id }}" placeholder="192.168.240.112:5555" hidden>
+                        <button>Voir le stockage</button>
+                    </form>
                 </div>
             </div>
         {% endfor %}

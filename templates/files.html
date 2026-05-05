@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Gestionnaire de fichiers</h1>
+
+{% if not device %}
+    <p>Aucun appareil connecté.</p>
+{% else %}
+
+<div class="card">
+    <p><strong>Appareil :</strong> {{ device }}</p>
+    <p><strong>Chemin :</strong> {{ path }}</p>
+
+    {% if parent_path %}
+        <a class="btn" href="/files?device={{ device }}&path={{ parent_path }}">
+            ← Retour
+        </a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Contenu</h2>
+
+    {% if files %}
+        <table style="width:100%;">
+            <tr>
+                <th>Type</th>
+                <th>Nom</th>
+                <th>Taille</th>
+                <th>Date</th>
+                <th>Permissions</th>
+            </tr>
+
+            {% for f in files %}
+            <tr>
+                <td style="text-align:center;">
+                    {% if f.type == "directory" %}
+                        📁
+                    {% elif f.type == "link" %}
+                        🔗
+                    {% else %}
+                        📄
+                    {% endif %}
+                </td>
+
+                <td style="text-align:center;">
+                    {% if f.type == "directory" %}
+                        <a href="/files?device={{ device }}&path={{ path }}/{{ f.name }}">
+                            {{ f.name }}
+                        </a>
+                    {% else %}
+                        {{ f.name }}
+                    {% endif %}
+                </td>
+
+                <td style="text-align:center;">{{ f.size }}</td>
+                <td style="text-align:center;">{{ f.date }} {{ f.time }}</td>
+                <td style="text-align:center;">{{ f.permissions }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Dossier vide ou inaccessible.</p>
+    {% endif %}
+</div>
+
+{% endif %}
+{% endblock %}
