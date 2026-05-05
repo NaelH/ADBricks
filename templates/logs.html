@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Logs Android</h1>
+
+{% if not devices %}
+    <p>Aucun appareil connecté.</p>
+{% else %}
+
+<div class="card">
+    <form method="get">
+        <label>Appareil :</label>
+
+        <select name="device">
+            {% for d in devices %}
+                <option value="{{ d.id }}"
+                    {% if d.id == selected_device %}selected{% endif %}>
+                    {{ d.id }} - {{ d.status }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label>Nombre de lignes :</label>
+        <input type="number" name="lines" value="{{ lines }}" min="10" max="2000">
+
+        <button type="submit">Afficher</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Résultat</h2>
+
+    {% if logs %}
+        <pre style="max-height:600px; overflow:auto;">{{ logs }}</pre>
+    {% else %}
+        <p>Aucun log.</p>
+    {% endif %}
+</div>
+
+{% endif %}
+{% endblock %}

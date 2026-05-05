@@ -133,7 +133,101 @@ def shell():
         results=results
     )
 
-    
+@app.route("/logs")
+def logs():
+    device = request.args.get("device")
+    lines = request.args.get("lines", 200)
+
+    devices = adb_client.list_devices()
+
+    if not devices:
+        return render_template(
+            "logs.html",
+            devices=[],
+            selected_device=None,
+            logs=None
+        )
+
+    if not device:
+        device = devices[0]["id"]
+
+    logs = None
+
+    try:
+        logs = adb_client.get_logs(device, lines)
+    except Exception as e:
+        logs = f"Erreur : {str(e)}"
+
+    return render_template(
+        "logs.html",
+        devices=devices,
+        selected_device=device,
+        logs=logs,
+        lines=lines
+    )
+@app.route("/screen")
+def screen():
+    device = request.args.get("device")
+    devices = adb_client.list_devices()
+
+    if not devices:
+        return render_template(
+            "screen.html",
+            devices=[],
+            selected_device=None,
+            screenshot=None,
+            error=None
+        )
+
+    if not device:
+        device = devices[0]["id"]
+
+    screenshot = None
+    error = None
+
+    try:
+        screenshot = adb_client.get_screenshot(device)
+    except Exception as e:
+        error = str(e)
+
+    return render_template(
+        "screen.html",
+        devices=devices,
+        selected_device=device,
+        screenshot=screenshot,
+        error=error
+    )
+
+@app.route("/screen/tap", methods=["POST"])
+def screen_tap():
+    device = request.form.get("device")
+    x = request.form.get("x")
+    y = request.form.get("y")
+
+    adb_client.tap(device, x, y)
+
+    return redirect(f"/screen?device={device}")
+
+
+@app.route("/screen/text", methods=["POST"])
+def screen_text():
+    device = request.form.get("device")
+    text = request.form.get("text")
+
+    adb_client.input_text(device, text)
+
+    return redirect(f"/screen?device={device}")
+
+
+@app.route("/screen/key", methods=["POST"])
+def screen_key():
+    device = request.form.get("device")
+    key = request.form.get("key")
+
+    adb_client.keyevent(device, key)
+
+    return redirect(f"/screen?device={device}")
+
 @app.route("/api/devices")
 def api_devices():
     return "<p>API DEVICES</p>"

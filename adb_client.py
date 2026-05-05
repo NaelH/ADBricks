@@ -1,4 +1,5 @@
 import subprocess
+import base64
 
 default_device = "192.168.240.112:5555"
 default_device = "7.7.7.7:5555"
@@ -217,3 +218,98 @@ def run_shell_all(command):
         })
 
     return results
+
+
+def get_logs(device, lines=200):
+    """
+    Récupère les logs Android les plus récents,
+    puis les affiche du plus récent au plus ancien.
+    """
+    output = run_adb([
+        "-s", device,
+        "logcat",
+        "-d"
+    ])
+
+    logs = output.splitlines()
+    recent_logs = logs[-int(lines):]
+
+    recent_logs.reverse()
+
+    return "\n".join(recent_logs)
+def get_screenshot(device):
+    """
+    Récupère une capture écran du device en base64.
+    """
+    result = subprocess.run(
+        ["adb", "-s", device, "exec-out", "screencap", "-p"],
+        capture_output=True,
+        timeout=10
+    )
+
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.decode(errors="ignore"))
+
+    return base64.b64encode(result.stdout).decode("utf-8")
+    
+
+def tap(device, x, y):
+    """
+    Simule un appui tactile sur l'écran.
+    """
+    return run_adb(
+        ["shell", "input", "tap", str(x), str(y)],
+        device=device
+    )
+
+
+def swipe(device, x1, y1, x2, y2, duration=300):
+    """
+    Simule un swipe.
+    """
+    return run_adb(
+        [
+            "shell", "input", "swipe",
+            str(x1), str(y1),
+            str(x2), str(y2),
+            str(duration)
+        ],
+        device=device
+    )
+
+
+def input_text(device, text):
+    """
+    Envoie du texte sur le téléphone.
+    """
+    safe_text = text.replace(" ", "%s")
+
+    return run_adb(
+        ["shell", "input", "text", safe_text],
+        device=device
+    )
+
+
+def keyevent(device, key):
+    """
+    Envoie une touche système Android.
+    """
+    keys = {
+        "home": "KEYCODE_HOME",
+        "back": "KEYCODE_BACK",
+        "recent": "KEYCODE_APP_SWITCH",
+        "power": "KEYCODE_POWER",
+        "enter": "KEYCODE_ENTER",
+        "volume_up": "KEYCODE_VOLUME_UP",
+        "volume_down": "KEYCODE_VOLUME_DOWN"
+    }
+
+    keycode = keys.get(key)
+
+    if not keycode:
+        raise ValueError("Touche inconnue")
+
+    return run_adb(
+        ["shell", "input", "keyevent", keycode],
+        device=device
+    )

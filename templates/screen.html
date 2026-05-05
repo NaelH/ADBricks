@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Contrôle écran</h1>
+
+{% if not devices %}
+    <p>Aucun appareil connecté.</p>
+{% else %}
+
+<div class="card">
+    <form method="get" action="/screen">
+        <label>Appareil :</label>
+
+        <select name="device">
+            {% for d in devices %}
+                <option value="{{ d.id }}"
+                    {% if d.id == selected_device %}selected{% endif %}>
+                    {{ d.id }} - {{ d.status }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Changer</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Écran</h2>
+
+    <img
+        id="phone-screen"
+        src="data:image/png;base64,{{ screenshot }}"
+        style="max-width:600px; border:1px solid #333; cursor:pointer;"
+    >
+</div>
+
+<div class="card">
+    <form action="/screen/text" method="post">
+        <input type="hidden" name="device" value="{{ selected_device }}">
+        <input type="text" name="text" placeholder="Texte à saisir">
+        <button type="submit">Envoyer texte</button>
+    </form>
+</div>
+
+<div class="card">
+    <form action="/screen/key" method="post" style="display:inline;">
+        <input type="hidden" name="device" value="{{ selected_device }}">
+        <input type="hidden" name="key" value="back">
+        <button type="submit">Retour</button>
+    </form>
+
+    <form action="/screen/key" method="post" style="display:inline;">
+        <input type="hidden" name="device" value="{{ selected_device }}">
+        <input type="hidden" name="key" value="home">
+        <button type="submit">Accueil</button>
+    </form>
+
+    <form action="/screen/key" method="post" style="display:inline;">
+        <input type="hidden" name="device" value="{{ selected_device }}">
+        <input type="hidden" name="key" value="recent">
+        <button type="submit">Applications récentes</button>
+    </form>
+</div>
+
+<form id="tap-form" action="/screen/tap" method="post">
+    <input type="hidden" name="device" value="{{ selected_device }}">
+    <input type="hidden" id="tap-x" name="x">
+    <input type="hidden" id="tap-y" name="y">
+</form>
+
+<script>
+const screen = document.getElementById("phone-screen");
+const form = document.getElementById("tap-form");
+const inputX = document.getElementById("tap-x");
+const inputY = document.getElementById("tap-y");
+
+screen.addEventListener("click", function(event) {
+    const rect = screen.getBoundingClientRect();
+
+    const displayX = event.clientX - rect.left;
+    const displayY = event.clientY - rect.top;
+
+    const realX = Math.round(displayX * screen.naturalWidth / rect.width);
+    const realY = Math.round(displayY * screen.naturalHeight / rect.height);
+
+    inputX.value = realX;
+    inputY.value = realY;
+
+    form.submit();
+});
+</script>
+
+{% endif %}
+{% endblock %}
